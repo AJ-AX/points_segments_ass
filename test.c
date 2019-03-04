@@ -18,7 +18,28 @@ void print_array_2D(int **arr, int rows, int cols){
 }
 
 
+/*
+
+While these tests show the naive algorithmn having better times, it's important to
+note that A) The divide algorithmn has more steps, so it will take more time in smaller amounts
+(+B) at first.
+
+and
+
+B) All the samples tested here are relatively small (for a computer). If we tested with a much
+larger database (millions of points, etc.) - you would see a marked difference in the runtimes
+of the Algorithmns.
+
+*/
 int main() {	
+
+	clock_t t;
+	double naive_time_used;
+	double divide_time_used;
+	int count_tests;
+	double average_naive = 0;
+	double average_divide = 0;
+
 	const char * files[] = {"input1.txt", "input2.txt", "input3.txt"};   
 
 	for (int f=0; f < 3; f++){
@@ -59,9 +80,33 @@ int main() {
 			//-for each point- the number of covering segments 
 			
 			//TODO: implement - compare these outputs from 2 algorithms
+
+			t = clock();
+			int *z = malloc(sizeof(int) * p);
+			z = points_segments_naive(segments, points, s, p);
+			print_array(z, p);
+			free(z);
+			t = clock()-t;
+			naive_time_used = ((double)t)/CLOCKS_PER_SEC;
+			average_naive += naive_time_used;
+
+			t = clock();
+			int *r = points_segments_divide(segments, points, s, p);
+			print_array(r, p);
+			free(r);
+			t = clock()-t;
+			divide_time_used = ((double)t)/CLOCKS_PER_SEC;
+			average_divide += divide_time_used;
+
+			count_tests++;
+
+			printf("Time Taken by Naive Alg: [%lf]", naive_time_used);
+			printf("\nTime Taken by Divide Alg: [%lf]\n\n", divide_time_used);
 			
 		}
 		fclose(pfile);
 	}
+	printf("\n\nAverage Time Taken by Naive Alg: [%lf]", average_naive/count_tests);
+	printf("\nAverage Time Taken by Divide Alg: [%lf]", average_divide/count_tests);
 	return 0;
 }
